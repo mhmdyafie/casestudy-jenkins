@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = 'https://github.com/mhmdyafie/casestudy-jenkins.git'
+        IMAGE = 'yourdockerhubusername/yourimage'
         TAG = 'latest'
     }
 
@@ -10,7 +10,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def app = docker.build("${IMAGE}:${TAG}")
+                    def image = docker.build("${IMAGE}:${TAG}")
                 }
             }
         }
@@ -25,13 +25,13 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes (Helm)') {
+        stage('Deploy to Kubernetes') {
             steps {
                 script {
                     sh """
-                    helm upgrade --install myapp helm/myapp \
-                    --set image.repository=${IMAGE} \
-                    --set image.tag=${TAG}
+                        helm upgrade --install myapp helm/myapp \
+                        --set image.repository=${IMAGE} \
+                        --set image.tag=${TAG}
                     """
                 }
             }
@@ -40,10 +40,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Pipeline berhasil"
+            echo '✅ Pipeline sukses!'
         }
         failure {
-            echo "❌ Pipeline gagal, cek log di Console Output"
+            echo '❌ Pipeline gagal. Cek log Console Output.'
         }
     }
 }
